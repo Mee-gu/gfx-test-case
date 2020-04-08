@@ -15,6 +15,7 @@
 #include "tests/DepthTest.h"
 #include "tests/TestBase.h"
 #include "tests/BunnyTest.h"
+#include "tests/InstancingTest.h"
 
 using namespace cocos2d;
 
@@ -90,6 +91,7 @@ namespace
             ParticleTest::create,
             DepthTexture::create,
             BunnyTest::create,
+            InstancingTest::create,
         };
         g_test = g_tests[g_nextTextIndex](g_windowInfo);
         if (g_test == nullptr)

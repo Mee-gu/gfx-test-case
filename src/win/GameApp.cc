@@ -9,6 +9,7 @@
 #include "tests/BlendTest.h"
 #include "tests/ParticleTest.h"
 #include "tests/BunnyTest.h"
+#include "tests/InstancingTest.h"
 
 NS_CC_BEGIN
 
@@ -136,9 +137,10 @@ bool GameApp::initialize()
             BasicTexture::create,
             DepthTexture::create,
             StencilTest::create,
-	    BlendTest::create,
+	        BlendTest::create,
             ParticleTest::create,
             BunnyTest::create,
+            Instancing::create,
         };
         _test = _tests[_nextIndex](_windowInfo);
         if (_test == nullptr)

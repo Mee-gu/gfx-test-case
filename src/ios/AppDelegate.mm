@@ -17,6 +17,7 @@
 #include "tests/BlendTest.h"
 #include "tests/ParticleTest.h"
 #include "tests/BunnyTest.h"
+#include "tests/InstancingTest.h"
 
 using namespace cocos2d;
 
@@ -89,7 +90,8 @@ namespace
             StencilTest::create,
             BlendTest::create,
             ParticleTest::create,
-            BunnyTest::create
+            BunnyTest::create,
+            Instancing::create,
         };
         g_test = g_tests[g_nextTextIndex](g_windowInfo);
         if (g_test == nullptr)

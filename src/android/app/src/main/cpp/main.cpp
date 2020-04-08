@@ -9,6 +9,7 @@
 #include "tests/BlendTest.h"
 #include "tests/ParticleTest.h"
 #include "tests/BunnyTest.h"
+#include "tests/InstancingTest.h"
 
 #include <android/log.h>
 //#include "AppDelegate.h"
@@ -49,6 +50,7 @@ namespace
                     BlendTest::create,
                     ParticleTest::create,
                     BunnyTest::create,
+                    Instancing::create,
             };
             g_test = g_tests[g_nextTestIndex](g_windowInfo);
             if (g_test == nullptr)

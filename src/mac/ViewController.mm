@@ -16,6 +16,7 @@
 #include "tests/TestBase.h"
 #include "tests/BunnyTest.h"
 #include "tests/BlendTest.h"
+#include "tests/InstancingTest.h"
 
 #import <AppKit/NSTouch.h>
 #import <AppKit/NSEvent.h>
@@ -112,6 +113,7 @@ namespace
             DepthTexture::create,
             BunnyTest::create,
             BlendTest::create,
+            InstancingTest::create,
         };
         g_test = g_tests[g_nextTextIndex](g_windowInfo);
         if (g_test == nullptr)
