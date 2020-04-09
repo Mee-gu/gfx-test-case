@@ -18,7 +18,6 @@ void Instancing::destroy()
     CC_SAFE_DESTROY(_instancedBuffer);
     CC_SAFE_DESTROY(_inputAssembler);
     CC_SAFE_DESTROY(_pipelineState);
-    CC_SAFE_DESTROY(_bindingLayout);
 }
 
 bool Instancing::initialize()
@@ -26,7 +25,6 @@ bool Instancing::initialize()
     createShader();
     createVertexBuffer();
     createInputAssembler();
-    createTexture();
     createPipeline();
     return true;
 }
@@ -38,14 +36,48 @@ void Instancing::createShader()
     vertexShaderStage.type = GFXShaderType::VERTEX;
 #if (CC_PLATFORM == CC_PLATFORM_MAC_OSX && defined(MAC_USE_METAL))
     vertexShaderStage.source = R"(
+    #include <metal_stdlib>
+    #include <simd/simd.h>
 
+    using namespace metal;
+
+    struct main0_out
+    {
+        float3 fColor [[user(locn0)]];
+        float4 gl_Position [[position]];
+    };
+
+    struct main0_in
+    {
+        float2 aPos [[attribute(0)]];
+        float3 aColor [[attribute(1)]];
+        float2 aOffset [[attribute(2)]];
+    };
+
+    vertex main0_out main0(main0_in in [[stage_in]])
+    {
+        main0_out out = {};
+        out.fColor = in.aColor;
+        out.gl_Position = float4(in.aPos + in.aOffset, 0.0, 1.0);
+        return out;
+    }
     )";
     
 #else
     
 #ifdef USE_GLES2
     vertexShaderStage.source = R"(
-    
+    attribute vec2 aPos;
+    attribute vec3 aColor;
+    attribute vec2 aOffset;
+
+    varying vec3 fColor;
+
+    void main()
+    {
+        fColor = aColor;
+        gl_Position = vec4(aPos + aOffset, 0.0, 1.0);
+    }
     )";
 #else
     vertexShaderStage.source = R"(#version 300 es
@@ -71,13 +103,42 @@ void Instancing::createShader()
     
 #if (CC_PLATFORM == CC_PLATFORM_MAC_OSX && defined(MAC_USE_METAL))
     fragmentShaderStage.source = R"(
-    
+    #include <metal_stdlib>
+    #include <simd/simd.h>
+
+    using namespace metal;
+
+    struct main0_out
+    {
+        float4 FragColor [[color(0)]];
+    };
+
+    struct main0_in
+    {
+        float3 fColor [[user(locn0)]];
+    };
+
+    fragment main0_out main0(main0_in in [[stage_in]])
+    {
+        main0_out out = {};
+        out.FragColor = float4(in.fColor, 1.0);
+        return out;
+    }
     )";
 #else
     
 #ifdef USE_GLES2
     fragmentShaderStage.source = R"(
+    #ifdef GL_ES
+    precision highp float;
+    #endif
     
+    varying vec3 fColor;
+
+    void main()
+    {
+        gl_FragColor = vec4(fColor, 1.0);
+    }
     )";
 #else
     fragmentShaderStage.source = R"(#version 300 es
@@ -110,6 +171,7 @@ void Instancing::createVertexBuffer()
     // generate a list of 100 quad locations/translation-vectors
     int index = 0;
     float offset = 0.1f;
+
     for (int y = -10; y < 10; y += 2)
     {
         for (int x = -10; x < 10; x += 2)
@@ -167,7 +229,7 @@ void Instancing::createInputAssembler()
     inputAssemblerInfo.vertexBuffers.emplace_back(_vertexBuffer);
     inputAssemblerInfo.vertexBuffers.emplace_back(_instancedBuffer);
     _inputAssembler = _device->createInputAssembler(inputAssemblerInfo);
-    _inputAssembler->setInstanceCount(100);
+    _inputAssembler->setInstanceCount(INSTANCE_COUNT);
 }
 
 void Instancing::createPipeline()
@@ -187,10 +249,6 @@ void Instancing::createPipeline()
     CC_SAFE_DESTROY(pipelineLayout);
 }
 
-void Instancing::createTexture()
-{
-}
-
 void Instancing::tick(float dt) {
 
     GFXRect render_area = {0, 0, _device->getWidth(), _device->getHeight() };
@@ -201,7 +259,6 @@ void Instancing::tick(float dt) {
         commandBuffer->begin();
         commandBuffer->beginRenderPass(_fbo, render_area, GFXClearFlagBit::ALL, std::move(std::vector<GFXColor>({clear_color})), 1.0f, 0);
         commandBuffer->bindInputAssembler(_inputAssembler);
-//        commandBuffer->bindBindingLayout(_bindingLayout);
         commandBuffer->bindPipelineState(_pipelineState);
         commandBuffer->draw(_inputAssembler);
         commandBuffer->endRenderPass();

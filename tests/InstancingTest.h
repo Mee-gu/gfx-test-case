@@ -23,16 +23,15 @@ private:
     void createVertexBuffer();
     void createPipeline();
     void createInputAssembler();
-    void createTexture();
 
     GFXShader* _shader = nullptr;
     GFXBuffer* _vertexBuffer = nullptr;
     GFXBuffer* _instancedBuffer = nullptr;
     GFXPipelineState* _pipelineState = nullptr;
     GFXInputAssembler* _inputAssembler = nullptr;
-    GFXBindingLayout* _bindingLayout = nullptr;
 
-    cocos2d::Vec2 _translations[100];
+    const static int INSTANCE_COUNT = 100;
+    cocos2d::Vec2 _translations[INSTANCE_COUNT];
 };
 
 NS_CC_END
