@@ -1,6 +1,6 @@
 #include "TestBase.h"
 
-//#define USE_METAL
+//#define CC_USE_METAL
 //#define USE_GLES3
 //#define USE_GLES2
 
@@ -8,7 +8,7 @@
     #include "gfx-gles2/GFXGLES2.h"
 #elif defined(USE_GLES3)
     #include "gfx-gles3/GFXGLES3.h"
-#elif defined(USE_METAL)
+#elif defined(CC_USE_METAL)
     #include "gfx-metal/GFXMTL.h"
 #else
     #include "gfx-vulkan/GFXVulkan.h"
@@ -29,7 +29,7 @@ TestBaseI::TestBaseI(const WindowInfo &info) {
         _device = CC_NEW(gfx::GLES2Device);
 #elif defined(USE_GLES3)
         _device = CC_NEW(gfx::GLES3Device);
-#elif defined(USE_METAL)
+#elif defined(CC_USE_METAL)
         _device = CC_NEW(gfx::CCMTLDevice);
 #else
         _device = CC_NEW(gfx::CCVKDevice);

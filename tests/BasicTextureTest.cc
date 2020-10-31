@@ -46,6 +46,7 @@ void BasicTexture::createShader() {
             }
         )",
         R"(
+            precision mediump float;
             layout(location = 0) in vec2 texcoord;
             layout(binding = 1) uniform sampler2D u_texture[2];
             layout(location = 0) out vec4 o_color;

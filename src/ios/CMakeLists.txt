@@ -12,7 +12,8 @@ set(INCLUDE_FILES
   ${GFX_EXTERNAL_PATH}/khronos
   ${COCOS_SRC_PATH}/renderer/core
 #   ${COCOS_SRC_PATH}/renderer/gfx-gles2
-  ${COCOS_SRC_PATH}/renderer/gfx-gles3
+#   ${COCOS_SRC_PATH}/renderer/gfx-gles3
+${COCOS_SRC_PATH}/renderer/gfx-metal
   ./GFXTest
 )
 
@@ -57,17 +58,22 @@ set_xcode_property(${APP_NAME} INFOPLIST_FILE ${CMAKE_CURRENT_SOURCE_DIR}/Info.p
 find_library(UIKIT_LIBRARY UIKit)
 find_library(OPENGLES_LIBRARY OpenGLES)
 find_library(QUARTZCORE_LIBRARY QuartzCore)
+find_library(METAL_LIBRARY Metal)
+find_library(METALKIT_LIBRARY MetalKit)
 list(APPEND PLATFORM_SPECIFIC_LIBS
      ${UIKIT_LIBRARY}
      ${OPENGLES_LIBRARY}
      ${QUARTZCORE_LIBRARY}
+     ${METAL_LIBRARY}
+     ${METALKIT_LIBRARY}
 )
 
 target_link_libraries(${APP_NAME} 
     ${PLATFORM_SPECIFIC_LIBS} 
     Core 
-    GFXGLES3 
+    # GFXGLES3 
     # GFXGLES2
+    GFXMetal
     ${CC_EXTERNAL_LIBS}
     z
 )

@@ -38,6 +38,7 @@ void BasicTriangle::createShader() {
             }
         )",
         R"(
+            precision mediump float;
             layout(set = 0, binding = 0) uniform Color {
                 vec4 u_color;
             };
@@ -117,11 +118,13 @@ void BasicTriangle::createShader() {
 }
 
 void BasicTriangle::createVertexBuffer() {
-    float vertexData[] = {-0.5f, 0.5f,
-                          -0.5f, -0.5f,
+    float vertexData[] = {-0.5f, -0.5f,
+//                          -0.5f, -0.5f,
                           0.5f, -0.5f,
                           0.0f, 0.5f,
-                          0.5f, 0.5f};
+//                          0.5f, 0.5f
+        
+    };
 
     gfx::BufferInfo vertexBufferInfo = {
         gfx::BufferUsage::VERTEX,
@@ -167,7 +170,7 @@ void BasicTriangle::createVertexBuffer() {
     drawInfo.indexCount = 3;
 
     gfx::BufferInfo indirectBufferInfo = {
-        gfx::BufferUsageBit::INDIRECT,
+        gfx::BufferUsageBit::VERTEX,
         gfx::MemoryUsage::DEVICE | gfx::MemoryUsage::HOST,
         sizeof(gfx::DrawInfo),
         sizeof(gfx::DrawInfo),
@@ -181,15 +184,15 @@ void BasicTriangle::createInputAssembler() {
     gfx::InputAssemblerInfo inputAssemblerInfo;
     inputAssemblerInfo.attributes.emplace_back(std::move(position));
     inputAssemblerInfo.vertexBuffers.emplace_back(_vertexBuffer);
-    inputAssemblerInfo.indexBuffer = _indexBuffer;
-    inputAssemblerInfo.indirectBuffer = _indirectBuffer;
+//    inputAssemblerInfo.indexBuffer = _indexBuffer;
+//    inputAssemblerInfo.indirectBuffer = _indirectBuffer;
     _inputAssembler = _device->createInputAssembler(inputAssemblerInfo);
 }
 
 void BasicTriangle::createPipeline() {
     gfx::DescriptorSetLayoutInfo dslInfo;
-    dslInfo.bindings.push_back({0, gfx::DescriptorType::UNIFORM_BUFFER, 1, gfx::ShaderStageFlagBit::FRAGMENT});
-    dslInfo.bindings.push_back({1, gfx::DescriptorType::UNIFORM_BUFFER, 1, gfx::ShaderStageFlagBit::VERTEX});
+    dslInfo.bindings.push_back({0, gfx::DescriptorType::UNIFORM_BUFFER, 1, gfx::ShaderStageFlagBit::FRAGMENT, {}});
+    dslInfo.bindings.push_back({1, gfx::DescriptorType::UNIFORM_BUFFER, 1, gfx::ShaderStageFlagBit::VERTEX, {}});
     _descriptorSetLayout = _device->createDescriptorSetLayout(dslInfo);
 
     _pipelineLayout = _device->createPipelineLayout({{_descriptorSetLayout}});

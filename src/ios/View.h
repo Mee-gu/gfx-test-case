@@ -7,9 +7,14 @@
 
 #pragma once
 
-#import <UIKit/UIView.h>
-
+#ifdef CC_USE_METAL
+    #import <MetalKit/MetalKit.h>
+@interface View : MTKView <MTKViewDelegate>
+#else
+    #import <UIKit/UIView.h>
 @interface View : UIView
+#endif
+@property (nonatomic, assign) BOOL preventTouch;
 
+- (void)setPreventTouchEvent:(BOOL)flag;
 @end
-

@@ -7,26 +7,25 @@
 //
 
 #import "AppDelegate.h"
-#import "ViewController.h"
 #import "View.h"
-#include "tests/ClearScreenTest.h"
-#include "tests/BasicTriangleTest.h"
+#import "ViewController.h"
 #include "tests/BasicTextureTest.h"
-#include "tests/DepthTest.h"
-#include "tests/StencilTest.h"
+#include "tests/BasicTriangleTest.h"
 #include "tests/BlendTest.h"
-#include "tests/ParticleTest.h"
 #include "tests/BunnyTest.h"
+#include "tests/ClearScreenTest.h"
+#include "tests/DepthTest.h"
+#include "tests/ParticleTest.h"
+#include "tests/StencilTest.h"
 
-using namespace cocos2d;
+using namespace cc;
 
-namespace
-{
-    int g_nextTextIndex = 0;
-    using createFunc = TestBaseI * (*)(const WindowInfo& info);
-    std::vector<createFunc> g_tests;
-    TestBaseI* g_test    = nullptr;
-    WindowInfo g_windowInfo;
+namespace {
+int g_nextTextIndex = 0;
+using createFunc = TestBaseI *(*)(const WindowInfo &info);
+std::vector<createFunc> g_tests;
+TestBaseI *g_test = nullptr;
+WindowInfo g_windowInfo;
 }
 
 @interface AppDelegate ()
@@ -43,54 +42,57 @@ namespace
     self.window = [[UIWindow alloc] initWithFrame: [[UIScreen mainScreen] bounds]];
     ViewController* viewController = [[ViewController alloc] init];
     
+#ifdef CC_USE_METAL
+    MTKView* view = [[View alloc] initWithFrame: [[UIScreen mainScreen] bounds] device:MTLCreateSystemDefaultDevice()];
+    view.framebufferOnly = YES;
+    viewController.view = view;
+#else
     UIView* view = [[View alloc] initWithFrame: [[UIScreen mainScreen] bounds]];
     viewController.view = view;
+#endif
     
-    [self initWindowInfo: view];
-    [self initTests];
-    [self run];
-    
-    [self.window setRootViewController:viewController];
-    [self.window makeKeyAndVisible];
-    
+     [self initWindowInfo: view];
+     [self initTests];
+     [self run];
+
+     [self.window setRootViewController:viewController];
+     [self.window makeKeyAndVisible];
+
     return YES;
 }
 
-- (void)initWindowInfo:(UIView*)view {
+- (void)initWindowInfo:(UIView *)view {
     g_windowInfo.windowHandle = (intptr_t)(view);
-    
+
     CGRect rect = [[UIScreen mainScreen] bounds];
-    
+
     float scale = 1.0f;
-    if ( [view respondsToSelector:@selector(setContentScaleFactor:)] )
-    {
+    if ([view respondsToSelector:@selector(setContentScaleFactor:)]) {
         scale = [[UIScreen mainScreen] scale];
         view.contentScaleFactor = scale;
     }
-    
+
     g_windowInfo.screen.x = rect.origin.x * scale;
     g_windowInfo.screen.y = rect.origin.y * scale;
     g_windowInfo.screen.width = rect.size.width * scale;
     g_windowInfo.screen.height = rect.size.height * scale;
-    
+
     g_windowInfo.physicalHeight = g_windowInfo.screen.height;
     g_windowInfo.physicalWidth = g_windowInfo.screen.width;
 }
 
 - (void)initTests {
     static bool first = true;
-    if (first)
-    {
+    if (first) {
         g_tests = {
-            ClearScreen::create,
+//            ClearScreen::create,
             BasicTriangle::create,
             BasicTexture::create,
             DepthTexture::create,
             StencilTest::create,
             BlendTest::create,
             ParticleTest::create,
-            BunnyTest::create
-        };
+            BunnyTest::create};
         g_test = g_tests[g_nextTextIndex](g_windowInfo);
         if (g_test == nullptr)
             return;
@@ -99,21 +101,19 @@ namespace
 }
 
 - (void)run {
-    CADisplayLink* displayLink = [NSClassFromString(@"CADisplayLink") displayLinkWithTarget:self selector:@selector(loop:)];
+    CADisplayLink *displayLink = [NSClassFromString(@"CADisplayLink") displayLinkWithTarget:self selector:@selector(loop:)];
     displayLink.preferredFramesPerSecond = 60;
     [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 }
 
--(void)loop:(id)sender {
+- (void)loop:(id)sender {
     g_test->tick(1.0f / 60);
 }
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
-{
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     g_nextTextIndex = (++g_nextTextIndex) % g_tests.size();
     CC_SAFE_DESTROY(g_test);
     g_test = g_tests[g_nextTextIndex](g_windowInfo);
 }
-
 
 @end
