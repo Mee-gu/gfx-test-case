@@ -12,7 +12,7 @@ set(INCLUDE_FILES
   ${GFX_EXTERNAL_PATH}/khronos
   ${GFX_EXTERNAL_PATH}/boost
   ${COCOS_SRC_PATH}/renderer/core
-  ${COCOS_SRC_PATH}/renderer/gfx-metal
+#   ${COCOS_SRC_PATH}/renderer/gfx-metal
   ${COCOS_SRC_PATH}/renderer/gfx-gles2
   ./GFXTest
 )
@@ -56,7 +56,7 @@ set(ALL_FILES
 if(COCOS_UNICODE)
 	add_definitions("-DUNICODE -D_UNICODE")
 endif()
-add_definitions("-DUSE_GLES2")
+# add_definitions("-DUSE_GLES2")
 
 add_executable(${APP_NAME} MACOSX_BUNDLE ${ALL_FILES})
 
@@ -65,11 +65,36 @@ set_target_properties(${APP_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST "${CMAKE_C
 
 # Locate system libraries on macOS
 find_library(APPKIT_LIBRARY AppKit)
+find_library(ICONV_LIBRARY iconv)
+find_library(AUDIOTOOLBOX_LIBRARY AudioToolBox)
+find_library(FOUNDATION_LIBRARY Foundation)
+find_library(OPENAL_LIBRARY OpenAL)
+find_library(GAMECONTROLLER_LIBRARY GameController)
+find_library(METAL_LIBRARY Metal)
+find_library(METALLIT_LIBRARY MetalKit)
+find_library(SQLITE3_LIBRARY SQLite3)
+find_library(SECURITY_LIBRARY Security)
+find_library(SystemConfiguration_LIBRARY SystemConfiguration)
+find_library(OPENGL_LIBRARY OpenGL)
+find_library(APPKIT_LIBRARY AppKit)
 list(APPEND PLATFORM_SPECIFIC_LIBS
      ${APPKIT_LIBRARY}
-     ${COCOS_EXTERNAL_PATH}/pvrsdk/lib/OSX_x86/libEGL.dylib
-     ${COCOS_EXTERNAL_PATH}/pvrsdk/lib/OSX_x86/libGLESv2.dylib
+     ${ICONV_LIBRARY}
+    ${AUDIOTOOLBOX_LIBRARY}
+    ${FOUNDATION_LIBRARY}
+    ${OPENAL_LIBRARY}
+    ${GAMECONTROLLER_LIBRARY}
+    ${METAL_LIBRARY}
+    ${METALLIT_LIBRARY}
+    ${SQLITE3_LIBRARY}
+    ${SECURITY_LIBRARY}
+    ${SystemConfiguration_LIBRARY}
+    ${OPENGL_LIBRARY}
+    ${APPKIT_LIBRARY}
+     ${GFX_EXTERNAL_PATH}/pvrsdk/lib/OSX_x86/libEGL.dylib
+     ${GFX_EXTERNAL_PATH}/pvrsdk/lib/OSX_x86/libGLESv2.dylib
 )
+
 
 target_link_libraries(${APP_NAME}
     ${PLATFORM_SPECIFIC_LIBS}
@@ -95,6 +120,7 @@ if(MACOSX)
 endif()
 
   set(PVRSDK_LIB_DIR ${GFX_EXTERNAL_PATH}/pvrsdk/lib/OSX_x86)
+
 
 # Gather list of all .dll files
 file(GLOB PVRDLLS ${PVRSDK_LIB_DIR}/*.dylib)

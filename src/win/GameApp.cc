@@ -9,7 +9,7 @@
 #include "tests/DepthTest.h"
 #include "tests/ParticleTest.h"
 #include "tests/StencilTest.h"
-#include "tests/Multithread.h"
+// #include "tests/Multithread.h"
 
 namespace cc {
 

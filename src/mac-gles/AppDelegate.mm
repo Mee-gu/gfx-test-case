@@ -16,7 +16,7 @@
 #include "tests/TestBase.h"
 #include "tests/BunnyTest.h"
 
-using namespace cocos2d;
+using namespace cc;
 
 namespace
 {
@@ -56,11 +56,11 @@ namespace
     [_window makeKeyAndOrderFront:nil];
     
     g_windowInfo.windowHandle = (intptr_t)_view;
-    
+    auto dpr = [_window backingScaleFactor];
     g_windowInfo.screen.x = 0;
     g_windowInfo.screen.y = 0;
-    g_windowInfo.screen.width = rect.size.width;
-    g_windowInfo.screen.height = rect.size.height;
+    g_windowInfo.screen.width = rect.size.width * dpr;
+    g_windowInfo.screen.height = rect.size.height * dpr;
     
     g_windowInfo.physicalHeight = g_windowInfo.screen.height;
     g_windowInfo.physicalWidth = g_windowInfo.screen.width;

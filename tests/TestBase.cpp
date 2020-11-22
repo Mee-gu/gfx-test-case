@@ -30,13 +30,13 @@ TestBaseI::TestBaseI(const WindowInfo &info)
 {
     if (_device == nullptr) {
 #if defined(USE_GLES2)
-        _device = CC_NEW(gfx::DeviceProxy(CC_NEW(gfx::GLES2Device), nullptr));
+        _device = CC_NEW(gfx::GLES2Device);//CC_NEW(gfx::DeviceProxy(CC_NEW(gfx::GLES2Device), nullptr));
 #elif defined(USE_GLES3)
-        _device = CC_NEW(gfx::DeviceProxy(CC_NEW(gfx::GLES3Device), nullptr));
+        _device = CC_NEW(gfx::GLES3Device);//CC_NEW(gfx::DeviceProxy(CC_NEW(gfx::GLES3Device), nullptr));
 #elif defined(USE_METAL)
-        _device = CC_NEW(gfx::DeviceProxy(CC_NEW(gfx::CCMTLDevice), nullptr));
+        _device = CC_NEW(gfx::CCMTLDevice);//CC_NEW(gfx::DeviceProxy(CC_NEW(gfx::CCMTLDevice), nullptr));
 #else
-        _device = CC_NEW(gfx::DeviceProxy(CC_NEW(gfx::CCVKDevice), nullptr));
+        _device = CC_NEW(gfx::CCVKDevice);//CC_NEW(gfx::DeviceProxy(CC_NEW(gfx::CCVKDevice), nullptr));
 #endif
 
         gfx::DeviceInfo dev_info;
