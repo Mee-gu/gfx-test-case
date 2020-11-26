@@ -5,7 +5,7 @@ endmacro (set_xcode_property)
 
 message(STATUS "App: ${APP_NAME}...")
 
-option(USE_METAL "USE METAL" ON)
+option(USE_METAL "USE METAL" OFF)
 set(USE_METAL OFF)
 
 # ---------------------------------------------------------------------

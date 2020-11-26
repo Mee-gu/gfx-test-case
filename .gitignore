@@ -2,3 +2,4 @@ build*
 src/android/.idea
 .DS_Store
 macBuild
+iosBuild

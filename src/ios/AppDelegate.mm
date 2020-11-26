@@ -84,7 +84,7 @@ WindowInfo g_windowInfo;
     static bool first = true;
     if (first) {
         g_tests = {
-            Multithread::create,
+//            Multithread::create,
             ClearScreen::create,
             BasicTriangle::create,
             BasicTexture::create,
